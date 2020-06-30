@@ -1,0 +1,28 @@
+﻿@model Progress.Models.Model
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+{
+    <br />
+    @Html.AntiForgeryToken()
+    @Html.LabelFor(m => m.Email)
+
+    @Html.TextBoxFor(m => m.Email)
+
+    <input type="submit" value="Submit" />
+}
+@if (ViewData["Error"] != null)
+{
+    <div class="red">
+        <p>@ViewData["Error"].ToString()</p>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="green">
+        <p>@TempData["Success"].ToString()</p>
+    </div>
+}
