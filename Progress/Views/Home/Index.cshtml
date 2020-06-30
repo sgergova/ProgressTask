@@ -9,8 +9,8 @@
     <br />
     @Html.AntiForgeryToken()
     @Html.LabelFor(m => m.Email)
-
-    @Html.TextBoxFor(m => m.Email)
+    <input id="email" type="email" name="email" required />
+  //  @Html.TextBoxFor(m => m.Email)
 
     <input type="submit" value="Submit" />
 }
@@ -26,3 +26,6 @@
         <p>@TempData["Success"].ToString()</p>
     </div>
 }
+@section Scripts{
+    <script src="~/js/ValidationScripts.js"></script>
+    }
