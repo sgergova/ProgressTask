@@ -1,13 +1,11 @@
 ﻿using DataAnnotationsExtensions;
 using Newtonsoft.Json;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Progress.Models
 {
-    public class Model
+    public class ModelVM
     {
-        [Required]
         [DisplayName("Email")]
         [JsonProperty(PropertyName = "email")]
         [Email(ErrorMessage = "Invalid email")]

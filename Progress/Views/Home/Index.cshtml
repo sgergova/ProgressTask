@@ -1,4 +1,4 @@
-﻿@model Progress.Models.Model
+﻿@model Progress.Models.ModelVM
 
 @{
     ViewBag.Title = "Home Page";
@@ -9,8 +9,8 @@
     <br />
     @Html.AntiForgeryToken()
     @Html.LabelFor(m => m.Email)
-    <input id="email" type="email" name="email" required />
-  //  @Html.TextBoxFor(m => m.Email)
+    <input id="email" type="email" name="email" />
+//    @Html.TextBoxFor(m => m.Email)
 
     <input type="submit" value="Submit" />
 }
@@ -27,5 +27,6 @@
     </div>
 }
 @section Scripts{
-    <script src="~/js/ValidationScripts.js"></script>
+    <script src="~/js/_ValidationScripts.js"></script>
+
     }

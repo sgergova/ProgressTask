@@ -23,7 +23,7 @@ namespace Progress.Controllers
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<ActionResult> Index(Model model)
+        public async Task<ActionResult> Index(ModelVM model)
         {
             try
             {
@@ -37,7 +37,6 @@ namespace Progress.Controllers
                                     .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
                              + TimeSpan.FromMilliseconds(1000));
 
-
                     using (var httpClient = new HttpClient())
                     {
                         var postAsync = await policy.ExecuteAsync(async () => await httpClient.PostAsync(url,
@@ -47,7 +46,6 @@ namespace Progress.Controllers
 
                     }
                     return RedirectToAction("Index", "Home");
-
                 }
             }
             catch (Exception)
