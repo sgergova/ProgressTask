@@ -28,7 +28,7 @@ namespace Progress.Controllers
                 var policy = Policy
                                 .Handle<Exception>()
                                 .OrResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-                                .WaitAndRetryAsync(1, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
                          + TimeSpan.FromMilliseconds(1000));
 
                 using (var httpClient = new HttpClient())
@@ -45,10 +45,6 @@ namespace Progress.Controllers
                         TempData["Error"] = SuccessAndErrorMessages.ErrorMessage;
                     }
                 }
-            }
-            else
-            {
-                TempData["Error"] = SuccessAndErrorMessages.ErrorMessage;
             }
             return RedirectToAction("Index", "Home");
 
