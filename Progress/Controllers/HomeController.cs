@@ -1,16 +1,12 @@
-﻿using Magnum.FileSystem;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Polly;
+using Progress.Messages;
 using Progress.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 
 namespace Progress.Controllers
 {
@@ -23,34 +19,36 @@ namespace Progress.Controllers
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<ActionResult> Index(ModelVM model)
+        public async Task<ActionResult> Index(Model model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var json = model.Email;
+                var converted = JsonConvert.SerializeObject(model, Formatting.Indented);
+                var policy = Policy
+                                .Handle<Exception>()
+                                .OrResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+                                .WaitAndRetryAsync(1, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                         + TimeSpan.FromMilliseconds(1000));
+
+                using (var httpClient = new HttpClient())
                 {
-                    var json = model.Email;
-                    var converted = JsonConvert.SerializeObject(model, Formatting.Indented);
-                    var policy = Policy
-                                    .Handle<Exception>()
-                                    .OrResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-                                    .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                             + TimeSpan.FromMilliseconds(1000));
-
-                    using (var httpClient = new HttpClient())
+                    var postAsync = await policy.ExecuteAsync(async () => await httpClient.PostAsync(url,
+               new StringContent(converted, Encoding.UTF8, "application/json")));
+                    if (postAsync.IsSuccessStatusCode)
                     {
-                        var postAsync = await policy.ExecuteAsync(async () => await httpClient.PostAsync(url,
-                   new StringContent(converted, Encoding.UTF8, "application/json")));
-                        if (postAsync.IsSuccessStatusCode)
-                            TempData["Success"]= "Your email was successfully submitted!";
-
+                        TempData["Success"] = SuccessAndErrorMessages.SuccsessMessage;
+                        return RedirectToAction("Index", "Home");
                     }
-                    return RedirectToAction("Index", "Home");
+                    else
+                    {
+                        TempData["Error"] = SuccessAndErrorMessages.ErrorMessage;
+                    }
                 }
             }
-            catch (Exception)
+            else
             {
-                TempData["Error"]= "The email was not sent. Please try again!";
+                TempData["Error"] = SuccessAndErrorMessages.ErrorMessage;
             }
             return RedirectToAction("Index", "Home");
 

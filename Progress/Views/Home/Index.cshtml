@@ -1,4 +1,4 @@
-﻿@model Progress.Models.ModelVM
+﻿@model Progress.Models.Model
 
 @{
     ViewBag.Title = "Home Page";
@@ -9,15 +9,15 @@
     <br />
     @Html.AntiForgeryToken()
     @Html.LabelFor(m => m.Email)
-    <input id="email" type="email" name="email" />
+    <input id="email" type="email" name="email" required />
 //    @Html.TextBoxFor(m => m.Email)
 
     <input type="submit" value="Submit" />
 }
-@if (ViewData["Error"] != null)
+@if (TempData["Error"] != null)
 {
     <div class="red">
-        <p>@ViewData["Error"].ToString()</p>
+        <p>@TempData["Error"].ToString()</p>
     </div>
 }
 @if (TempData["Success"] != null)

@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Progress.Models
 {
-    public class ModelVM
+    public class Model
     {
         [DisplayName("Email")]
         [JsonProperty(PropertyName = "email")]
